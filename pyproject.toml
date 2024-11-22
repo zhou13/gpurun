@@ -1,0 +1,35 @@
+[project]
+name = "gpurun"
+version = "0.1.0"
+description = "GPU job runner with semaphore-based scheduling"
+authors = [
+    { name = "Yichao Zhou", email = "yichao.zhou@apple.com" }
+]
+dependencies = [
+    "filelock>=3.16.1",
+]
+readme = "README.md"
+requires-python = ">= 3.7"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=8.3.3",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "pre-commit>=4.0.1",
+    "pyright>=1.1.389",
+]
+
+[project.scripts]
+gpurun = "gpurun.cli:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gpurun"]
