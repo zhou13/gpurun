@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-import subprocess
-import os
-import sys
 import argparse
 import contextlib
+import os
+import subprocess
+import sys
+import time
+
 from filelock import FileLock, Timeout
 
 
@@ -28,14 +30,14 @@ class GPUManager:
     def __init__(
         self,
         gpu_ids: list[int],
-        jobs_per_gpu: int,
+        max_jobs_per_gpu: int,
         gpus_per_job: int = 1,
         session: str = "default-session",
     ):
-        gpu_ids = gpu_ids * jobs_per_gpu
+        gpu_ids = gpu_ids * max_jobs_per_gpu
         self.gpu_ids = gpu_ids
-        self.jobs_per_gpu = jobs_per_gpu
         self.gpus_per_job = gpus_per_job
+        self.session = session
 
         if len(gpu_ids) % gpus_per_job != 0:
             raise ValueError(
@@ -43,23 +45,24 @@ class GPUManager:
             )
 
         self.num_gpu_groups = len(gpu_ids) // gpus_per_job
-        self.locks_dir = os.path.join(os.path.expanduser("~"), ".gpu_locks", session)
-        os.makedirs(self.locks_dir, exist_ok=True)
-
-        self.locks = [
-            FileLock(
-                os.path.join(self.locks_dir, f"gpu_{group_id:02}.lock"), timeout=-1
-            )
+        self.lock_files = [
+            os.path.join(self.locks_dir, f"gpu_{group_id:02}.lock")
             for group_id in range(self.num_gpu_groups)
         ]
+
+    @property
+    def locks_dir(self) -> str:
+        locks_dir = os.path.join(os.path.expanduser("~"), ".gpu_locks", self.session)
+        os.makedirs(locks_dir, exist_ok=True)
+        return locks_dir
 
     @contextlib.contextmanager
     def acquire_gpus(self):
         # Try to acquire GPU group in round-robin fashion
         while True:
-            for group_id, lock in enumerate(self.locks):
+            for group_id, lock_file in enumerate(self.lock_files):
                 try:
-                    with lock.acquire(timeout=0.1):
+                    with FileLock(lock_file).acquire(blocking=False):
                         start_idx = group_id * self.gpus_per_job
                         end_idx = start_idx + self.gpus_per_job
                         assigned_gpus = self.gpu_ids[start_idx:end_idx]
@@ -67,6 +70,7 @@ class GPUManager:
                         return
                 except Timeout:
                     pass
+            time.sleep(0.1)
 
 
 def parse_gpu_arg(value):
@@ -82,9 +86,7 @@ def parse_gpu_arg(value):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Run a command with GPU management and scheduling"
-    )
+    parser = argparse.ArgumentParser(description="Run a command with GPU management and scheduling")
     parser.add_argument(
         "--session",
         type=str,
@@ -105,6 +107,7 @@ def parse_args():
         help="Maximum number of concurrent jobs allowed per GPU group (default: 1)",
     )
     parser.add_argument(
+        "-g",
         "--gpus-per-job",
         type=int,
         default=1,
@@ -134,9 +137,7 @@ def main():
         gpu_ids = args.gpus
 
     # Initialize GPU manager
-    gpu_manager = GPUManager(
-        gpu_ids, args.max_jobs_per_gpu, args.gpus_per_job, args.session
-    )
+    gpu_manager = GPUManager(gpu_ids, args.max_jobs_per_gpu, args.gpus_per_job, args.session)
 
     try:
         with gpu_manager.acquire_gpus() as assigned_gpus:
