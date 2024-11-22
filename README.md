@@ -35,8 +35,8 @@ for i in $(seq 1 100); do gpurun python infer.py $i.jpg & done
 # 2. Same as 1, but put 2 jobs on each GPU at the same time.
 for i in $(seq 1 100); do gpurun -j2 python infer.py $i.jpg & done
 
-# 3. Same as 1, but use gnu-parallel to simplify the command.
-parallel -j0 gpurun python infer.py {} ::: $(seq 1 100)
+# 3. Same as 2, but use gnu-parallel to simplify the command.
+parallel -j0 gpurun -j2 python infer.py {} ::: $(seq 1 100)
 
 # 4. Same as 1, but infer.py now will see 2 GPUs.
 parallel -j0 gpurun -g2 python infer.py {} ::: $(seq 1 100)

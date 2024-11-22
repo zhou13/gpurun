@@ -1,7 +1,7 @@
 [project]
 name = "gpurun"
 version = "0.1.0"
-description = "GPU job runner with semaphore-based scheduling"
+description = "GPU job scheduler using filelock"
 authors = [
     { name = "Yichao Zhou", email = "yichao.zhou@apple.com" }
 ]

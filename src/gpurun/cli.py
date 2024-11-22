@@ -138,15 +138,11 @@ def main():
 
     # Initialize GPU manager
     gpu_manager = GPUManager(gpu_ids, args.max_jobs_per_gpu, args.gpus_per_job, args.session)
-
-    try:
-        with gpu_manager.acquire_gpus() as assigned_gpus:
-            env = os.environ.copy()
-            env["CUDA_VISIBLE_DEVICES"] = ",".join(map(str, assigned_gpus))
-            process = subprocess.run(args.command, env=env, check=True)
-            sys.exit(process.returncode)
-    except subprocess.CalledProcessError as e:
-        sys.exit(e.returncode)
+    with gpu_manager.acquire_gpus() as assigned_gpus:
+        env = os.environ.copy()
+        env["CUDA_VISIBLE_DEVICES"] = ",".join(map(str, assigned_gpus))
+        process = subprocess.run(args.command, env=env)
+        sys.exit(process.returncode)
 
 
 if __name__ == "__main__":
