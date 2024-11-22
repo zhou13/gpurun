@@ -10,6 +10,15 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/zhou13/gpurun"
+Issues = "https://github.com/zhou13/gpurun/issues"
 
 [build-system]
 requires = ["hatchling"]
