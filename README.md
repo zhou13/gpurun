@@ -1,5 +1,10 @@
 # 🚀 GPU Runner (`gpurun`)
 
+[![image](https://img.shields.io/pypi/v/gpurun.svg)](https://pypi.python.org/pypi/gpurun)
+[![image](https://img.shields.io/pypi/l/gpurun.svg)](https://github.com/zhou13/gpurun/blob/main/LICENSE)
+[![image](https://img.shields.io/pypi/pyversions/gpurun.svg)](https://pypi.python.org/pypi/gpurun)
+[![Actions status](https://github.com/zhou13/gpurun/workflows/CI/badge.svg)](https://github.com/zhou13/gpurun/actions)
+
 ## Overview
 
 `gpurun` is a sophisticated command-line tool designed to simplify GPU resource management and scheduling jobs on a single machine for machine learning, data science, and computational tasks. It provides intelligent GPU allocation, concurrency control, and seamless integration with CUDA applications using `CUDA_VISIBLE_DEVICES`. It is inspired by the `sem` tool from GNU parallel.
