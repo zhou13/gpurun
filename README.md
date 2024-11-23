@@ -1,7 +1,7 @@
 # 🚀 GPU Runner (`gpurun`)
 
-[![image](https://img.shields.io/pypi/v/gpurun.svg)](https://pypi.python.org/pypi/gpurun)
-[![image](https://img.shields.io/pypi/l/gpurun.svg)](https://github.com/zhou13/gpurun/blob/master/LICENSE.txt)
+[![image](https://img.shields.io/pypi/v/gpurun)](https://pypi.python.org/pypi/gpurun)
+[![image](https://img.shields.io/pypi/l/gpurun)](https://github.com/zhou13/gpurun/blob/master/LICENSE.txt)
 [![Actions status](https://github.com/zhou13/gpurun/actions/workflows/python-package.yml/badge.svg)](https://github.com/zhou13/gpurun/actions)
 
 ## Overview
@@ -26,7 +26,7 @@ Imagine you are on an 8-GPU machine, and you want to run 100 inference jobs. You
 ## Installation
 
 ```bash
-pip install git+https://github.com/zhou13/gpurun
+pip install gpurun
 ```
 
 ## Usage Examples
