@@ -41,16 +41,16 @@ for i in $(seq 1 100); do gpurun python infer.py $i.jpg & done
 for i in $(seq 1 100); do gpurun -j2 python infer.py $i.jpg & done
 
 # 3. Same as 2, but use gnu-parallel to simplify the command.
-parallel -j0 gpurun -j2 python infer.py {} ::: $(seq 1 100)
+parallel -j0 gpurun -j2 python infer.py {} ::: *.jpg
 
 # 4. Same as 1, but infer.py now will see 2 GPUs.
-parallel -j0 gpurun -g2 python infer.py {} ::: $(seq 1 100)
+parallel -j0 gpurun -g2 python infer.py {} ::: *.jpg
 
 # 5. You can customize the GPUs to be used with --gpus.
-parallel -j0 gpurun --gpus 0,1 python infer.py {} ::: $(seq 1 100)
+parallel -j0 gpurun --gpus 0,1 python infer.py {} ::: *.jpg
 
 # 6. You can customize the name of lockfile with --session.
-parallel -j0 gpurun --session ml-seesion python infer.py {} ::: $(seq 1 100)
+parallel -j0 gpurun --session ml-seesion python infer.py {} ::: *.jpg
 ```
 
 ## Configuration Options
